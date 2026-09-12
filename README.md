@@ -244,4 +244,4 @@ global-superstore-profitability-analysis-sql-powerbi/
 **Hafiz Arslan Shafique**
 Data Analyst | SQL Server · Power BI
 
-📧 [Email](mailto:hafiz.shafique@esom.com.sa) · 💼 [LinkedIn](https://www.linkedin.com/in/hafiz-arslan-shafique-bc240203664/) · 🗂️ [GitHub](https://github.com/Hafiz-Arslan-Shafique/global-superstore-profitability-analysis-sql-powerbi) · 📞 [Contact](tel:+966579594038)
+📧 [Email](mailto:hafiz.shafique@esom.com.sa) · 💼 [LinkedIn](https://www.linkedin.com/in/hafiz-arslan-shafique-bc240203664/) · 🗂️ [GitHub](https://github.com/Hafiz-Arslan-Shafique/global-superstore-profitability-analysis-sql-powerbi) · 📞 [+966579594038](tel:+966579594038)
