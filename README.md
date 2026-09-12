@@ -208,7 +208,7 @@ global-superstore-profitability-analysis-sql-powerbi/
 ├── 02_powerbi_file/
 │   └── Global_Superstore_Dashboard.pbix
 ├── 03_dashboard_images/
-│   └── global-superstore-dashboard.png
+│   └── global-superstore-dashboard.jpg
 ├── 04_dataset/
 │   ├── Orders.csv
 │   ├── People.csv
