@@ -8,7 +8,7 @@
 [![Email](https://img.shields.io/badge/Email-hafiz.shafique%40esom.com.sa-D14836?style=flat&logo=gmail&logoColor=white)](mailto:hafiz.shafique@esom.com.sa)
 [![Contact](https://img.shields.io/badge/Contact-%2B966%2057%20959%204038-25D366?style=flat&logo=whatsapp&logoColor=white)](tel:+966579594038)
 
-![Global Superstore Dashboard](03_dashboard_images/global-superstore-dashboard.png)
+![Global Superstore Dashboard](03_dashboard_images/global-superstore-dashboard.jpg)
 
 ---
 
