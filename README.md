@@ -1,97 +1,247 @@
-# Global Superstore Sales & Profitability Analysis
-### End-to-End SQL Server + Power BI Project
+# 🛒 Global Superstore Profitability Analysis — SQL Server & Power BI
 
-**One-line summary:** A retailer with $12.64M in sales is converting only **11.63%** of it into profit. This project traces that leak through SQL data cleaning, KPI modeling, and an interactive Power BI dashboard down to its root cause — one region, one sub-category, and one discounting pattern.
+## Project Overview
+**End-to-end analysis of $12.64M+ in global retail sales** — from raw, unaudited transactional data to an interactive Power BI dashboard, using SQL Server for cleaning, KPI calculation, and root-cause profitability analysis.
 
-![Dashboard preview](03_dashboard_images/global-superstore-dashboard.jpg)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Hafiz%20Arslan%20Shafique-0A66C2?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/hafiz-arslan-shafique-bc240203664/)
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?style=flat&logo=github&logoColor=white)](https://github.com/Hafiz-Arslan-Shafique/global-superstore-profitability-analysis-sql-powerbi)
+[![Email](https://img.shields.io/badge/Email-hafiz.shafique%40esom.com.sa-D14836?style=flat&logo=gmail&logoColor=white)](mailto:hafiz.shafique@esom.com.sa)
+[![Contact](https://img.shields.io/badge/Contact-%2B966%2057%20959%204038-25D366?style=flat&logo=whatsapp&logoColor=white)](tel:+966579594038)
+
+![Global Superstore Dashboard](03_dashboard_images/global-superstore-dashboard.png)
 
 ---
 
-## Business Problem
+## 🎯 What This Project Does
+I analyzed four years of global retail transaction data to answer one core business question: **where exactly is profit margin being lost, and why?** I used **SQL Server** for data profiling, cleaning, and KPI logic, then built an **interactive Power BI dashboard** to trace an 11.63% profit margin back to its root cause.
 
-Leadership needs to know *which regions, categories, and discount practices* are eroding profitability, and how much returns are compounding the loss — so corrective action can be targeted instead of applied blindly across the whole business.
-
-## Tech Stack
-
-| Layer | Tool |
+| | |
 |---|---|
-| Database Engine | Microsoft SQL Server (T-SQL) |
-| BI / Visualization | Power BI Desktop |
-| Data Prep | SQL Views, `LTRIM`/`RTRIM`, `CAST`, `DATEDIFF` |
-| Version Control | Git & GitHub |
-
-## Dataset
-
-The **Global Superstore** dataset (2011–2014), loaded into SQL Server as three related tables:
-
-| Table | Rows | Description |
-|---|---|---|
-| `dbo.Orders` | 51,291 | Fact table — one row per order line |
-| `dbo.People` | 14 | Dimension — maps each Region to its Regional Manager |
-| `dbo.Returns` | ~800+ | Flag table — Order IDs that were returned |
-
-**Relationships:** `Orders.Region → People.Region`, `Orders.Order_ID → Returns.Order_ID`
+| **Total Sales Analyzed** | $12.64M |
+| **Total Profit** | $1.47M |
+| **Profit Margin** | 11.63% |
+| **Average Discount** | 14.26% |
+| **Return Rate** | 12.18% |
+| **Timeframe** | 2011–2014 |
+| **Tools** | SQL Server, T-SQL, Power BI, DAX, Power Query |
 
 ---
 
-## SQL Work
+## 💡 Key Insights
+- **Tables is the single biggest profit leak** — the only sub-category operating at a negative margin (**-8.41%**), losing ~$63.6K on $755.9K in sales, while Paper leads at 24.29%.
+- **Discounting and margin move in opposite directions** — Tables also carries the highest average discount (~29%), pointing to over-discounting as a direct driver of the loss.
+- **Regional performance is uneven** — Canada leads at 26.62% margin, while Southeast Asia is the weakest performer company-wide at ~2.05%.
+- **Consumer is the most valuable segment**, driving 51.06% of total profit — more than Corporate (30.08%) and Home Office (18.86%) combined.
+- **Returns are a material cost, not a footnote** — a 12.18% return rate justifies its own filter on the dashboard.
 
-All SQL lives in [`01_sql_queries/01_global_superstore_analysis.sql`](./01_sql_queries/01_global_superstore_analysis.sql), organized into four stages:
+---
 
-1. **Data Profiling (EDA)** — row counts, schema check, null audit (found 41 rows with missing Profit), duplicate checks (caught 1 duplicate `Order_ID` in Returns).
-2. **Data Cleaning (Views)** — `vw_CleanOrders`, `vw_CleanReturns`, `vw_CleanPeople` sit on top of the raw tables so nothing is edited in place and every transform stays auditable.
-3. **KPI Queries** — four queries answering: headline company metrics, return impact, weakest-margin region, and weakest-margin sub-category.
-4. **Final Model** — `vw_Final_Superstore_Dashboard`, a single governed view joining the cleaned fact and dimension layers, which is the *only* object Power BI connects to.
+## 🛠️ My Process
+1. **Profiled** the raw dataset in SQL Server (row counts, schema, data types across `Orders`, `People`, `Returns`).
+2. **Audited data quality** — found 41 rows with missing Profit and one duplicate `Order_ID` in Returns before trusting any aggregation.
+3. **Cleaned the data** using view-based transformations rather than editing raw tables, keeping every step auditable.
+4. **Built reusable SQL views** (`vw_CleanOrders`, `vw_CleanReturns`, `vw_CleanPeople`) to centralize cleaning logic instead of repeating it across queries.
+5. **Derived KPIs directly in SQL** — margin %, return rate, and regional/sub-category breakdowns — before a single chart was built.
+6. **Modeled a single governed view** (`vw_Final_Superstore_Dashboard`) joining fact and dimension layers, so Power BI reads from one consistent source of truth.
+7. **Modeled and visualized results in Power BI**, with DAX measures for Total Sales, Total Profit, Profit Margin %, Average Discount, and Return Rate %, plus a return-status slicer.
 
+<details>
+<summary><b>📂 See full SQL queries with explanations</b></summary>
+
+### 1. Row Counts (EDA)
+Confirms table volume before anything else is trusted.
+```sql
+SELECT 'Orders'  AS TableName, COUNT(*) AS TotalRows FROM dbo.Orders
+UNION ALL
+SELECT 'Returns', COUNT(*) FROM dbo.Returns
+UNION ALL
+SELECT 'People',  COUNT(*) FROM dbo.People;
+```
+
+### 2. Schema Check
+Confirms column names, data types, and lengths via the system catalog.
+```sql
+SELECT COLUMN_NAME, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = 'Orders'
+ORDER BY ORDINAL_POSITION;
+```
+
+### 3. Null Audit
+Flags missing values on the fields that drive the financial KPIs — this is where the 41 missing-Profit rows were found.
+```sql
+SELECT
+    SUM(CASE WHEN Sales  IS NULL THEN 1 ELSE 0 END) AS Null_Sales,
+    SUM(CASE WHEN Profit IS NULL THEN 1 ELSE 0 END) AS Null_Profit,
+    SUM(CASE WHEN Region IS NULL THEN 1 ELSE 0 END) AS Null_Region
+FROM dbo.Orders;
+```
+
+### 4. Duplicate Detection
+Confirms `Row_ID` uniqueness in Orders and catches duplicate `Order_ID`s in Returns.
+```sql
+SELECT COUNT(*) AS Total_Rows, COUNT(DISTINCT Row_ID) AS Unique_RowID
+FROM dbo.Orders;
+
+SELECT Order_ID, COUNT(*) AS Dup_Count
+FROM dbo.Returns
+GROUP BY Order_ID
+HAVING COUNT(*) > 1;
+```
+
+### 5. Clean Orders View
+Removes missing/invalid financial rows, trims `Order_ID`, and derives `Delivery_Days`.
+```sql
+CREATE VIEW dbo.vw_CleanOrders AS
+SELECT
+    Row_ID,
+    LTRIM(RTRIM(Order_ID))               AS Order_ID,
+    DATEDIFF(DAY, Order_Date, Ship_Date) AS Delivery_Days,
+    Region, Category, Sub_Category, Segment,
+    Sales, Quantity, Discount, Profit
+FROM dbo.Orders
+WHERE Profit IS NOT NULL AND Sales IS NOT NULL AND Sales > 0;
+```
+
+### 6. Clean Returns & Clean People Views
+De-duplicated, trimmed lookups used to flag returns and map regional managers.
+```sql
+CREATE VIEW dbo.vw_CleanReturns AS
+SELECT DISTINCT LTRIM(RTRIM(Order_ID)) AS Order_ID
+FROM dbo.Returns
+WHERE Order_ID IS NOT NULL;
+
+CREATE VIEW dbo.vw_CleanPeople AS
+SELECT LTRIM(RTRIM(Region)) AS Region, LTRIM(RTRIM(Person)) AS Person
+FROM dbo.People
+WHERE Person <> 'Person' AND Region <> 'Region';
+```
+
+### 7. KPI 1 — Headline Company Metrics
+```sql
+SELECT
+    SUM(Sales) AS Total_Sales,
+    SUM(Profit) AS Total_Profit,
+    ROUND(SUM(Profit) * 100.0 / NULLIF(SUM(Sales), 0), 2) AS Profit_Margin_Percent,
+    COUNT(DISTINCT Order_ID) AS Total_Orders
+FROM dbo.vw_CleanOrders;
+```
+
+### 8. KPI 2 — Return Impact
+```sql
+SELECT
+    COUNT(DISTINCT r.Order_ID) AS Returned_Orders,
+    SUM(o.Profit) AS Returned_Profit_Loss,
+    COUNT(DISTINCT r.Order_ID) * 100.0
+        / NULLIF((SELECT COUNT(DISTINCT Order_ID) FROM dbo.vw_CleanOrders), 0) AS Return_Rate_Percent
+FROM dbo.vw_CleanReturns r
+JOIN dbo.vw_CleanOrders o ON r.Order_ID = o.Order_ID;
+```
+
+### 9. KPI 3 & 4 — Weakest Region / Sub-Category by Margin
+```sql
+SELECT Region,
+       SUM(Sales) AS Sales, SUM(Profit) AS Profit,
+       ROUND(SUM(Profit) * 100.0 / NULLIF(SUM(Sales), 0), 2) AS Margin_Pct
+FROM dbo.vw_CleanOrders
+GROUP BY Region
+ORDER BY Margin_Pct ASC;
+
+SELECT Category, Sub_Category,
+       SUM(Sales) AS Sales, SUM(Profit) AS Profit,
+       ROUND(SUM(Profit) * 100.0 / NULLIF(SUM(Sales), 0), 2) AS Margin_Pct
+FROM dbo.vw_CleanOrders
+GROUP BY Category, Sub_Category
+ORDER BY Margin_Pct ASC;
+```
+
+### 10. Final Semantic Model for Power BI
+The single governed view Power BI connects to — joins cleaned fact and dimension layers and flags returned orders.
 ```sql
 CREATE VIEW dbo.vw_Final_Superstore_Dashboard AS
-SELECT o.*, p.Person AS Regional_Manager,
-       CASE WHEN r.Order_ID IS NOT NULL THEN 1 ELSE 0 END AS Is_Returned
-FROM dbo.vw_CleanOrders o
-LEFT JOIN dbo.vw_CleanPeople p  ON o.Region = p.Region
+SELECT
+    o.*,
+    p.Person AS Regional_Manager,
+    CASE WHEN r.Order_ID IS NOT NULL THEN 1 ELSE 0 END AS Is_Returned
+FROM dbo.vw_CleanOrders  o
+LEFT JOIN dbo.vw_CleanPeople  p ON o.Region = p.Region
 LEFT JOIN dbo.vw_CleanReturns r ON o.Order_ID = r.Order_ID;
 ```
 
-## Power BI Dashboard
+> Full script with every query, comment, and validation step: [`01_sql_queries/01_global_superstore_analysis.sql`](./01_sql_queries/01_global_superstore_analysis.sql)
 
-- Single fact view imported in **Import mode** — no manual relationship-building, since joins were resolved upstream in SQL
-- DAX measures: Total Sales, Total Profit, Profit Margin %, Avg Discount, Return Rate %
-- KPI card strip, `Is_Returned` slicer, Profit Margin % by Region, Profit Margin % by Sub-Category, Discount-vs-Margin scatter plot, monthly sales/margin trends, segment donut, regional map, and two detail tables
+</details>
 
-## Key KPIs
+<details>
+<summary><b>📊 See Power BI DAX measures</b></summary>
 
-| KPI | Value |
-|---|---|
-| Total Sales | **$12.64M** |
-| Total Profit | **$1.47M** |
-| Average Discount | **14.26%** |
-| Profit Margin | **11.63%** |
-| Return Rate | **12.18%** |
+```DAX
+Total Sales = SUM(vw_Final_Superstore_Dashboard[Sales])
 
-## Key Insights
+Total Profit = SUM(vw_Final_Superstore_Dashboard[Profit])
 
-1. **Tables is the single biggest profit leak** — the only sub-category with a negative margin (**-8.41%**), losing ~$63.6K on $755.9K in sales, while Paper leads at 24.29%.
-2. **Discount and margin move in opposite directions** — Tables also carries the highest average discount (~29%), pointing to over-discounting as a direct driver of the loss.
-3. **Regional performance is uneven** — Canada leads at 26.62% margin, while Southeast Asia is the weakest performer company-wide at ~2.05%.
-4. **Consumer is the most valuable segment** — driving 51.06% of total profit, more than Corporate (30.08%) and Home Office (18.86%) combined.
-5. **Returns are a meaningful drag** — a 12.18% return rate justifies its own slicer on the dashboard rather than a footnote.
+Profit Margin % = DIVIDE([Total Profit], [Total Sales])
 
-## How to Run
+Average Discount = AVERAGE(vw_Final_Superstore_Dashboard[Discount])
 
-1. Get the Global Superstore dataset (see [`04_dataset`](./04_dataset)) and restore it into SQL Server as `dbo.Orders`, `dbo.People`, `dbo.Returns`.
-2. Run [`01_sql_queries/01_global_superstore_analysis.sql`](./01_sql_queries/01_global_superstore_analysis.sql) top to bottom in SSMS to create the cleaning views and `vw_Final_Superstore_Dashboard`.
-3. In Power BI Desktop: **Get Data → SQL Server** → import `vw_Final_Superstore_Dashboard` (Import mode).
-4. Open the `.pbix` in [`02_powerbi_file`](./02_powerbi_file) and hit **Refresh**.
+Total Orders = DISTINCTCOUNT(vw_Final_Superstore_Dashboard[Order_ID])
 
-## Results
+Returned Orders =
+CALCULATE(
+    DISTINCTCOUNT(vw_Final_Superstore_Dashboard[Order_ID]),
+    vw_Final_Superstore_Dashboard[Is_Returned] = 1
+)
 
-The analysis pinpoints exactly where profitability is leaking: a single sub-category (**Tables**) driven by aggressive discounting, concentrated in specific underperforming regions, and further compounded by a double-digit return rate. Fixing discount policy on Tables alone is the single highest-leverage way to recover margin without touching sales volume.
+Return Rate % = DIVIDE([Returned Orders], [Total Orders])
+```
+*(DAX measures reconstructed to match the dashboard's KPI logic.)*
+
+</details>
 
 ---
 
-## Author
+## 📁 Repository Structure
+```text
+global-superstore-profitability-analysis-sql-powerbi/
+├── 01_sql_queries/
+│   └── 01_global_superstore_analysis.sql
+├── 02_powerbi_file/
+│   └── Global_Superstore_Dashboard.pbix
+├── 03_dashboard_images/
+│   └── global-superstore-dashboard.png
+├── 04_dataset/
+│   ├── Orders.csv
+│   ├── People.csv
+│   └── Returns.csv
+├── Final Report.pdf
+└── README.md
+```
 
-**Hafiz Arslan Shafique** — Data Analyst
-📧 hafiz.shafique@esom.com.sa · 🔗 [LinkedIn](https://www.linkedin.com/in/hafiz-arslan-shafique-bc240203664) · 💻 [GitHub](https://github.com/Hafiz-Arslan-Shafique)
+---
 
-Repo: [github.com/Hafiz-Arslan-Shafique/global-superstore-profitability-analysis-sql-powerbi](https://github.com/Hafiz-Arslan-Shafique/global-superstore-profitability-analysis-sql-powerbi)
+## 🚀 How to Run
+
+**SQL Server:** Open SSMS → create/select a database → import `Orders.csv`, `People.csv`, `Returns.csv` from `04_dataset/` as `dbo.Orders`, `dbo.People`, `dbo.Returns` → run [`01_global_superstore_analysis.sql`](./01_sql_queries/01_global_superstore_analysis.sql) top to bottom to build the cleaning views and `vw_Final_Superstore_Dashboard`.
+
+**Power BI:** Open `Global_Superstore_Dashboard.pbix` from `02_powerbi_file/` → **Get Data → SQL Server** → point it at `vw_Final_Superstore_Dashboard` (Import mode) → click **Refresh** → explore via the `Is_Returned` slicer and dashboard visuals.
+
+> If the `.pbix` exceeds GitHub's file-size limit, Git LFS may be needed.
+
+---
+
+## 🎓 Skills Demonstrated
+
+**SQL Server:** Data profiling, null/duplicate audits, view-based cleaning, KPI logic, multi-table joins, governed semantic modeling
+
+**Power BI:** Dashboard design, DAX measures, slicers, root-cause visual storytelling (KPI cards, regional map, discount-vs-margin scatter plot)
+
+**Analytical thinking:** Turning a single vague company-wide percentage into a specific, actionable root cause — not just describing numbers, but pointing to the fix
+
+---
+
+## 👨‍💻 Author
+
+**Hafiz Arslan Shafique**
+Data Analyst | SQL Server · Power BI
+
+📧 [Email](mailto:hafiz.shafique@esom.com.sa) · 💼 [LinkedIn](https://www.linkedin.com/in/hafiz-arslan-shafique-bc240203664/) · 🗂️ [GitHub](https://github.com/Hafiz-Arslan-Shafique/global-superstore-profitability-analysis-sql-powerbi) · 📞 [Contact](tel:+966579594038)
