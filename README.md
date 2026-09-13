@@ -5,7 +5,7 @@
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Hafiz%20Arslan%20Shafique-0A66C2?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/hafiz-arslan-shafique-bc240203664/)
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?style=flat&logo=github&logoColor=white)](https://github.com/Hafiz-Arslan-Shafique/global-superstore-profitability-analysis-sql-powerbi)
-[![Email](https://img.shields.io/badge/Email-hafizarslan3195%40gmail.com-D14836?style=flat&logo=gmail&logoColor=white)](mailto:hafizarslan3195@gmail.com)
+[![Email](https://img.shields.io/badge/Email-hafizarslan3195%40gmail.com-D14836?style=flat&logo=gmail&logoColor=white)](https://mail.google.com/mail/?view=cm&fs=1&to=hafizarslan3195@gmail.com)
 [![Contact](https://img.shields.io/badge/Contact-%2B966%2057%20959%204038-25D366?style=flat&logo=whatsapp&logoColor=white)](tel:+966579594038)
 
 ![Global Superstore Dashboard](03_dashboard_images/global-superstore-dashboard.jpg)
@@ -244,4 +244,4 @@ global-superstore-profitability-analysis-sql-powerbi/
 **Hafiz Arslan Shafique**
 Data Analyst | SQL Server · Power BI
 
-📧 [Email](mailto:hafizarslan3195@gmail.com) · 💼 [LinkedIn](https://www.linkedin.com/in/hafiz-arslan-shafique-bc240203664/) · 🗂️ [GitHub](https://github.com/Hafiz-Arslan-Shafique/global-superstore-profitability-analysis-sql-powerbi) · 📞 [+966579594038](tel:+966579594038)
+📧[Email](https://mail.google.com/mail/?view=cm&fs=1&to=hafizarslan3195@gmail.com) · 💼 [LinkedIn](https://www.linkedin.com/in/hafiz-arslan-shafique-bc240203664/) · 🗂️ [GitHub](https://github.com/Hafiz-Arslan-Shafique/global-superstore-profitability-analysis-sql-powerbi) · 📞 [+966579594038](tel:+966579594038)
