@@ -1,7 +1,7 @@
 # 🛒 Global Superstore Profitability Analysis — SQL Server & Power BI
 
 ## Project Overview
-**This project analyzes 4 years (2011–2014) of global retail sales data worth $12.64M** for a superstore chain to find why only 11.63% of sales turns into profit. It uncovers that **the Tables sub-category is the biggest profit leak (-8.41% margin, ~$63.6K lost)**, driven by an average discount of ~29%, with **Southeast Asia the weakest region (~2.05% margin)** and a **12.18% return rate** adding further pressure. It provides a data-driven strategy to fix discounting on loss-making products and recover **~$63.6K in profit, lifting margin from 11.63% to about 12.1%**.
+**This project analyzes 4 years (2011–2014) of global retail sales data worth $12.64M** for a superstore chain to find why only 11.63% of sales turns into profit. It uncovers that **the Tables sub-category is the biggest profit leak (-8.41% margin, about $63.6K lost)**, driven by an average discount of about 29%, with **Southeast Asia the weakest region (about 2.05% margin)** and a **12.18% return rate** adding further pressure. It provides a data-driven strategy to fix discounting on loss-making products and recover **about $63.6K in profit, lifting margin from 11.63% to about 12.1%**.
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Hafiz%20Arslan%20Shafique-0A66C2?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/hafiz-arslan-shafique-bc240203664/)
 [![GitHub](https://img.shields.io/badge/GitHub-Profile-181717?style=flat&logo=github&logoColor=white)](https://github.com/Hafiz-Arslan-Shafique)
